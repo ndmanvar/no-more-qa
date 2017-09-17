@@ -1,0 +1,38 @@
+var express = require('express');
+var app = express();
+
+var mysql      = require('mysql');
+var connection = mysql.createConnection({
+    host     : 'localhost',
+    user     : 'root',
+    password : 'password',
+    database : 'no-more-qa'
+});
+
+var bodyParser = require('body-parser');
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+
+app.post('/event', function (req, res) {
+  var obj = {
+      event_type: req.body.type,
+      event_value: req.body.key || null,
+      event_uid: req.body.uid,
+      event_testId: req.body.testId,
+  };
+
+  console.log(obj);
+
+  connection.connect();
+    connection.query('INSERT INTO events SET ?', obj, function (error, results, fields) {
+        if (error) throw error;
+        console.log(results.insertId);
+    });
+  connection.end();
+
+
+    // TODO: mysql
+  // res.send('Hello World');
+});
+
+app.listen(3000);
