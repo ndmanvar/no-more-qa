@@ -11,7 +11,7 @@ var connection = mysql.createConnection({
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({ extended: true })); // snpm upport encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // npm upport encoded bodies
 
 connection.connect();
 
