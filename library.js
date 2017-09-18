@@ -45,7 +45,7 @@ function sendEvent(event) {
         console.log(this.responseText);
     };
 
-    xhr.send('type=a&key=b&uid=c&testId=1234');
+    xhr.send('type=' + event.type + '&key=' + event.key + '&uid=' + event.uid + '&testId=' + event.testId);
 }
 
 // TODO: be smarter about how we are identifying uniqueness, i.e. user info
