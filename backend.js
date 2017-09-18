@@ -11,7 +11,9 @@ var connection = mysql.createConnection({
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // snpm upport encoded bodies
+
+connection.connect();
 
 app.post('/event', function (req, res) {
   var obj = {
@@ -20,19 +22,22 @@ app.post('/event', function (req, res) {
       event_uid: req.body.uid,
       event_testId: req.body.testId,
   };
+  
+  connection.query('INSERT INTO events SET ?', obj, function (error, results, fields) {
+    if (error) throw error;
+    console.log(results.insertId); // TODO
+  });
+});
 
-  console.log(obj);
-
-  connection.connect();
-    connection.query('INSERT INTO events SET ?', obj, function (error, results, fields) {
-        if (error) throw error;
-        console.log(results.insertId);
-    });
-  connection.end();
-
-
-    // TODO: mysql
-  // res.send('Hello World');
+function gracefulExit() {
+  try {
+    connection.end();
+  } finally {
+    process.exit();
+  }
+}
+process.on('SIGINT', function () { // might need to also do for SIGTERM
+  gracefulExit();
 });
 
 app.listen(3000);
