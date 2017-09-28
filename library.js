@@ -12,7 +12,7 @@ window.onclick = function (event) {
     });
 
     // TODO: Send to database / aggregate
- }
+}
 
 window.onkeypress = function (event) {
     var element = getTestID(event);
@@ -25,7 +25,6 @@ window.onkeypress = function (event) {
         testId: element.value,
         key: event.key
     });
-
 }
 
 function getTestID(event) {
@@ -58,5 +57,3 @@ function getGuid() {
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
     s4() + '-' + s4() + s4() + s4();
 }
-
-
