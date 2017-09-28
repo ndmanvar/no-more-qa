@@ -28,5 +28,6 @@ Obtain sessionId from either browser instance, backend or table.
 Use it as parameter to Ruby script:
 ```
 $ cd test_creation
+$ bundle install
 $ ruby create_test.rb <SESSION_ID>
 ```
