@@ -1,15 +1,16 @@
 window.uid = getGuid();
 
+assignTestIDs();
+
 window.onclick = function (event) {
     var element = getTestID(event);
     if (element) {
         console.log('Click on : ' + element.value);
+        sendEvent({
+            type: 'click',
+            testId: element.value
+        });
     }
-
-    sendEvent({
-        type: 'click',
-        testId: element.value
-    });
 
     // TODO: Send to database / aggregate
 }
@@ -18,13 +19,20 @@ window.onkeypress = function (event) {
     var element = getTestID(event);
     if (element) {
         console.log('Sending key : ' + event.key + ' to : ' + element.value);
+        sendEvent({
+            type: 'key',
+            testId: element.value,
+            key: event.key
+        });
     }
+}
 
-    sendEvent({
-        type: 'key',
-        testId: element.value,
-        key: event.key
-    });
+function assignTestIDs() {
+    var elements = document.getElementsByTagName("*");
+    for (var i=0, max=elements.length; i < max; i++) {
+        //  TODO: only assign testId to certain types of elements
+        elements[i].setAttribute('test-id', i.toString());
+    }
 }
 
 function getTestID(event) {
@@ -42,6 +50,8 @@ function sendEvent(event) {
         // do something to response
         console.log(this.responseText);
     };
+
+    // TODO: refactoring and send as object. Will need to possibly escape as well
     xhr.send('type=' + event.type + '&key=' + event.key + '&uid=' + event.uid + '&testId=' + event.testId);
 }
 
