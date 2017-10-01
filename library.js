@@ -33,7 +33,6 @@ function getTestID(event) {
 
 function sendEvent(event) {
     event.uid = window.uid;
-    // request(event);
 
     var xhr = new XMLHttpRequest();
     xhr.open('POST', 'http://localhost:3000/event', true);
@@ -43,7 +42,6 @@ function sendEvent(event) {
         // do something to response
         console.log(this.responseText);
     };
-
     xhr.send('type=' + event.type + '&key=' + event.key + '&uid=' + event.uid + '&testId=' + event.testId);
 }
 

@@ -11,21 +11,28 @@ raise "No session ID as parameter" if SESSION_ID.nil?
 res = RestClient.get("http://localhost:3000/getevents/#{SESSION_ID}")
 events = JSON.parse(res.body)
 
-puts "------------------BEGIN TEST------------------"
-puts "require 'selenium-webdriver'"
-puts "@browser = Selenium::WebDriver.for :chrome"
-# TODO: host/testEnv should not be hardcoded
-puts "@browser.get \"file:///Users/neilmanvar/git/random/no-more-qa/app.html\""
-for event in events
-    # TODO: make into switch/scase statement
-    if event['event_type'] == 'click'
-        puts "@browser.find_element(:css => \"*[test-id='#{event['event_testId']}']\").click()"
-    elsif event['event_type'] == 'key'
-        puts "@browser.find_element(:css => \"*[test-id='#{event['event_testId']}']\").send_keys(\"#{event['event_value']}\")"
-    else
-        # TODO: Handle gracefully
-        puts 'Not implemented'
+test_location = "generated_tests/freshly_created_test.rb"
+File.open(test_location, "w") do | file |
+    
+    file.write "# ------------------BEGIN TEST------------------\n"
+    file.write "require 'selenium-webdriver'\n"
+    file.write "@browser = Selenium::WebDriver.for :chrome\n"
+    # TODO: host/testEnv should not be hardcoded
+    file.write "@browser.get \"file:///Users/neilmanvar/git/random/no-more-qa/app.html\"\n"
+    for event in events
+        case event['event_type']
+        when 'click'
+            file.write "@browser.find_element(:css => \"*[test-id='#{event['event_testId']}']\").click()\n"
+        when 'key'
+            file.write "@browser.find_element(:css => \"*[test-id='#{event['event_testId']}']\").send_keys(\"#{event['event_value']}\")\n"
+        else
+            # TODO: Handle gracefully
+            file.write 'Not implemented\n'
+        end
     end
+    file.write "@browser.quit()\n"
+    file.write "# ------------------END TEST------------------\n"
 end
-puts "@browser.quit()"
-puts "------------------END TEST------------------"
+
+# Temporarily still output generated test script
+puts IO.read(test_location)
