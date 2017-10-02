@@ -13,6 +13,7 @@ To setup:
 Run backend:
 ```
 $ npm install
+$ cd backend
 $ node backend.js
 ```
 
