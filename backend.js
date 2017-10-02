@@ -21,6 +21,7 @@ app.post('/event', function (req, res) {
       event_value: req.body.key || null,
       event_uid: req.body.uid,
       event_testId: req.body.testId,
+      event_safe: req.body.safe
   };
   
   connection.query('INSERT INTO events SET ?', obj, function (error, results, fields) {
@@ -40,10 +41,26 @@ app.get('/getevents/:session', function (req, res) {
   connection.query('SELECT * FROM events WHERE event_uid = ?', req.params.session, function (error, results, fields) {
     if (error) throw error; // Need to implement proper error handler, otherwise request will show as pending
 
+      console.log(results);
+
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(results));
   });
 })
+
+app.get('/getsafe/:session', function (req, res) {
+  console.log(req.params);
+
+  connection.query('SELECT * FROM events WHERE event_uid = ? and event_safe = 0', req.params.session, function (error, results, fields) {
+    if (error) throw error; // Need to implement proper error handler, otherwise request will show as pending
+
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        safe: !results.length
+      }));
+  });
+})
+
 
 function gracefulExit() {
   try {

@@ -3,45 +3,63 @@ window.uid = getGuid();
 assignTestIDs();
 
 window.onclick = function (event) {
-    var element = getTestID(event);
-    if (element) {
-        console.log('Click on : ' + element.value);
+    var element = getTestIDInfo(event);
+    if (element.testId) {
+        console.log('Click on : ' + element.testId.value);
         sendEvent({
             type: 'click',
-            testId: element.value
+            testId: element.testId.value,
+            safe: element.safe
         });
     }
 
     // TODO: Send to database / aggregate
 }
 
+// TODO: hover, etc.
+
 window.onkeypress = function (event) {
-    var element = getTestID(event);
-    if (element) {
-        console.log('Sending key : ' + event.key + ' to : ' + element.value);
+    var element = getTestIDInfo(event);
+    if (element.testId) {
+        console.log('Sending key : ' + event.key + ' to : ' + element.testId.value);
         sendEvent({
             type: 'key',
-            testId: element.value,
-            key: event.key
+            testId: element.testId.value,
+            key: event.key,
+            safe: element.safe
         });
     }
 }
 
 function assignTestIDs() {
-    var elements = document.getElementsByTagName("*");
-    for (var i=0, max=elements.length; i < max; i++) {
-        //  TODO: only assign testId to certain types of elements
-        elements[i].setAttribute('test-id', i.toString());
+    var elements = document.getElementsByTagName("*"),
+        counter = 1;
+
+    for (var i = 0, max = elements.length; i < max; i++) {
+        //  TODO: only assign testId to certain types of elements (e.g. not html, br) that will be interacted with
+        var testId = elements[i].getAttribute('test-id');
+        if (testId === null) {
+            elements[i].setAttribute('gen-test-id', counter.toString());
+            counter++;
+        } else {
+            if (isNumeric(testId)) console.log("Error: Don't use Integers as test-id homie.");
+            // if (isNumeric(testId)) throw ("Error: Don't use Integers as test-id homie.");
+            // TODO: handle properly, since we will probably want to support the use of id's later, since adding test-id increases payload
+        }
     }
 }
 
-function getTestID(event) {
-    return event.target.attributes.getNamedItem('test-id');
+function getTestIDInfo(event) {
+    var testId = event.target.attributes.getNamedItem('test-id'),
+        genTestId = event.target.attributes.getNamedItem('gen-test-id');
+    
+    return {
+        testId: testId || genTestId,
+        safe: !!testId
+    }
 }
 
 function sendEvent(event) {
-    event.uid = window.uid;
-
     var xhr = new XMLHttpRequest();
     xhr.open('POST', 'http://localhost:3000/event', true);
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -52,16 +70,20 @@ function sendEvent(event) {
     };
 
     // TODO: refactoring and send as object. Will need to possibly escape as well
-    xhr.send('type=' + event.type + '&key=' + event.key + '&uid=' + event.uid + '&testId=' + event.testId);
+    xhr.send('type=' + event.type + '&key=' + event.key + '&uid=' + window.uid + '&testId=' + event.testId + '&safe=' + (event.safe ? '1' : '0'));
 }
 
 // TODO: be smarter about how we are identifying uniqueness, i.e. user info
 function getGuid() {
-  function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000)
-      .toString(16)
-      .substring(1);
-  }
-  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-    s4() + '-' + s4() + s4() + s4();
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+        s4() + '-' + s4() + s4() + s4();
+}
+
+function isNumeric(num){
+    return !isNaN(num)
 }
