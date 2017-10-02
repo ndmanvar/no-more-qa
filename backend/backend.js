@@ -61,7 +61,6 @@ app.get('/getsafe/:session', function (req, res) {
   });
 })
 
-
 function gracefulExit() {
   try {
     connection.end();
