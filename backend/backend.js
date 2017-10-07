@@ -47,7 +47,7 @@ app.get('/getevents/:session', function (req, res) {
     });
     res.end(JSON.stringify(results));
   });
-})
+});
 
 app.get('/getsafe/:session', function (req, res) {
   connection.query('SELECT * FROM events WHERE event_uid = ? and event_safe = 0', req.params.session, function (error, results, fields) {
@@ -59,7 +59,7 @@ app.get('/getsafe/:session', function (req, res) {
       safe: !results.length
     }));
   });
-})
+});
 
 function gracefulExit() {
   try {
