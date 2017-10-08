@@ -30,30 +30,54 @@ app.post('/event', function (req, res) {
     if (error) throw error; // Need to implement proper error handler, otherwise request will show as pending
 
     res.writeHead(200, {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
     });
     // res.write(JSON.stringify({ status: OK })); // don't think I need this
     res.end();
   });
-
-
 });
 
 app.get('/getevents/:session', function (req, res) {
   connection.query('SELECT * FROM events WHERE event_uid = ?', req.params.session, function (error, results, fields) {
     if (error) throw error; // Need to implement proper error handler, otherwise request will show as pending
     res.writeHead(200, {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
     });
     res.end(JSON.stringify(results));
   });
 });
 
+app.get('/getallevents', function (req, res) {
+  connection.query('SELECT * FROM events', function (error, results, fields) {
+    if (error) throw error; // Need to implement proper error handler, otherwise request will show as pending
+    res.writeHead(200, {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    });
+    res.end(JSON.stringify(results));
+  });
+});
+
+app.get('/getallsessions', function (req, res) {
+  connection.query('SELECT DISTINCT(event_uid) AS event_uid FROM events;', function (error, results, fields) {
+    if (error) throw error; // Need to implement proper error handler, otherwise request will show as pending
+    res.writeHead(200, {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    });
+    res.end(JSON.stringify(results));
+  });
+});
+
+
 app.get('/getsafe/:session', function (req, res) {
   connection.query('SELECT * FROM events WHERE event_uid = ? and event_safe = 0', req.params.session, function (error, results, fields) {
     if (error) throw error; // Need to implement proper error handler, otherwise request will show as pending
     res.writeHead(200, {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
     });
     res.end(JSON.stringify({
       safe: !results.length
