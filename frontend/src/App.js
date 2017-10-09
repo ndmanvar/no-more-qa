@@ -10,7 +10,7 @@ class App extends Component {
     super(props);
     
     this.state = {
-      sessions: []
+      sessions: [] // TODO: Templorary, this should not be here
     };
   }
   
@@ -25,11 +25,25 @@ class App extends Component {
       .catch((err)=> {})
   }
 
+  onGenTestCase(uid) {
+
+    axios
+      .get('http://localhost:3000/gettest/' + uid)
+      .then(({ data })=> {
+        console.log(data);
+        alert(data.test);
+      })
+      .catch((err)=> {})
+
+    // alert("uid is : " + uid);
+  }
+
   render() {
     const child = this.state.sessions.map((el, index) => {
-      return <div key={index}>
+      return <li key={index}>
         <p>UID - { el.event_uid }</p>
-      </div>
+        <button onClick={this.onGenTestCase.bind(this, el.event_uid)}>Generate Test Case for Yo Mama</button>
+      </li>
     });
 
     return (
@@ -42,9 +56,9 @@ class App extends Component {
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
 
-        <div>
+        <ul>
           {child}
-        </div>
+        </ul>
       </div>
     );
   }

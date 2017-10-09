@@ -5,7 +5,7 @@ var mysql = require('mysql');
 var connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'password',
+  password: 'paassword',
   database: 'no-more-qa'
 });
 
@@ -48,6 +48,41 @@ app.get('/getevents/:session', function (req, res) {
     res.end(JSON.stringify(results));
   });
 });
+
+// neil here
+app.get('/gettest/:session', function (req, res) {
+  const { exec } = require('child_process');
+  exec('pwd && cd ../test_creation && ruby create_test.rb ' + req.params.session, function (err, stdout, stderr) {
+    if (err) {
+      console.log(`stderr: ${stderr}`);
+      // node couldn't execute the command
+      return;
+    }
+
+    // the *entire* stdout and stderr (buffered)
+    console.log(`stdout: ${stdout}`);
+    console.log(`stderr: ${stderr}`);
+
+    res.writeHead(200, {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    });
+
+    res.end(JSON.stringify({ test: stdout }));
+  });
+
+
+
+  // connection.query('SELECT * FROM events WHERE event_uid = ?', req.params.session, function (error, results, fields) {
+  //   if (error) throw error; // Need to implement proper error handler, otherwise request will show as pending
+  //   res.writeHead(200, {
+  //     'Content-Type': 'application/json',
+  //     'Access-Control-Allow-Origin': '*'
+  //   });
+  //   res.end(JSON.stringify(results));
+  // });
+});
+// neil stop
 
 app.get('/getallevents', function (req, res) {
   connection.query('SELECT * FROM events', function (error, results, fields) {
@@ -92,7 +127,7 @@ function gracefulExit() {
     process.exit();
   }
 }
-process.on('SIGINT', function () { // might need to also do for SIGTERM
+process.on('SIGINT', function () { // TODO: might need to also do for SIGTERM
   gracefulExit();
 });
 
