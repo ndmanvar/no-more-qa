@@ -12,19 +12,28 @@ res = RestClient.get("http://localhost:3000/getevents/#{SESSION_ID}")
 events = JSON.parse(res.body)
 
 test_location = "generated_tests/freshly_created_test.rb"
-spec_location = "generated_tests/freshly_created_spec.nmqa"
+spec_location = "generated_tests/freshly_created_spec.txt"
 
 File.open(test_location, "w") do | file |
     File.open(spec_location, "w") do | spec_file |
         # TODO: host/testEnv should not be hardcoded
         url = "file:///Users/neilmanvar/git/random/no-more-qa/app.html"
         spec_file.write "launch_browser #{url}\n"
+
+        last_key_testId = nil
         for event in events
             case event['event_type']
             when 'click'
                 spec_file.write "click #{event['event_testId']}\n"
             when 'key'
-                spec_file.write "key #{event['event_testId']} #{event['event_value']}\n"
+                if last_key_testId == event['event_testId']
+                    spec_file.truncate(spec_file.size - 1) # remove last character (newline)
+                    spec_file.write("#{event['event_value']}\n")
+                else
+                    spec_file.write "key #{event['event_testId']} #{event['event_value']}\n"
+                end
+
+                last_key_testId = event['event_testId']
             else
                 # TODO: Handle gracefully
                 raise "Error: Event not implemented"
@@ -32,7 +41,7 @@ File.open(test_location, "w") do | file |
 
             # TODO: Track URL changes
         end
-        spec_file.write "close_browser"
+        spec_file.write "close_browser\n"
     end
 end
 
