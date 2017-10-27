@@ -53,7 +53,7 @@ app.get('/gettest/:session', function (req, res) {
   const { exec } = require('child_process');
 
   /* I must be crazy to use ruby and invoke shell from node. This must be redone at some point, to something intelligent... */
-  exec('pwd && cd ../test_creation && ruby create_test.rb ' + req.params.session, function (err, stdout, stderr) {
+  exec('cd ../test_creation && ruby create_spec.rb ' + req.params.session + ' && ruby spec_to_test.rb', function (err, stdout, stderr) {
     if (err) {
       console.log(`stderr: ${stderr}`);
       // node couldn't execute the command
@@ -61,7 +61,6 @@ app.get('/gettest/:session', function (req, res) {
     }
     // the *entire* stdout and stderr (buffered)
     console.log(`stdout: ${stdout}`);
-    console.log(`stderr: ${stderr}`);
 
     res.writeHead(200, {
       'Content-Type': 'application/json',
