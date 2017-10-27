@@ -20,12 +20,9 @@ File.open(spec_location, "r") do | spec_file |
                 file.write "# ------------------BEGIN TEST------------------\n"
                 file.write "require 'selenium-webdriver'\n"
                 file.write "@browser = Selenium::WebDriver.for :chrome\n" # TODO. Add browser support
-
-                # Timeout = 15 sec
-                file.write "wait = Selenium::WebDriver::Wait.new(:timeout => 15)\n  "
-                
-                
+                # Timeout = 15 sec # TODO: configurable timeouts
                 file.write "@browser.get \"#{event[1]}\"\n"
+                file.write "wait = Selenium::WebDriver::Wait.new(:timeout => 15)\n  "
             when 'close_browser'
                 file.write "@browser.quit()\n"
                 file.write "# ------------------END TEST------------------\n"
