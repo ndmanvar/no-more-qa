@@ -26,7 +26,6 @@ class App extends Component {
   }
 
   onGenTestCase(uid) {
-
     axios
       .get('http://localhost:3000/gettest/' + uid)
       .then(({ data })=> {
