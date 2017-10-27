@@ -29,7 +29,7 @@ class App extends Component {
     axios
       .get('http://localhost:3000/gettest/' + uid)
       .then(({ data })=> {
-        console.log(data);
+        // console.log(data);
         alert(data.test);
       })
       .catch((err)=> {})
