@@ -17,7 +17,7 @@ spec_location = "generated_tests/freshly_created_spec.txt"
 File.open(test_location, "w") do | file |
     File.open(spec_location, "w") do | spec_file |
         # TODO: host/testEnv should not be hardcoded
-        url = "file:///Users/neilmanvar/git/random/no-more-qa/app.html"
+        url = "file:///Users/neilmanvar/git/random/no-more-qa/app/app.html"
         spec_file.write "launch_browser #{url}\n"
 
         last_key_testId = nil
@@ -28,6 +28,7 @@ File.open(test_location, "w") do | file |
             when 'key'
                 if last_key_testId == event['event_testId']
                     spec_file.truncate(spec_file.size - 1) # remove last character (newline)
+                    spec_file.pos -= 1
                     spec_file.write("#{event['event_value']}\n")
                 else
                     spec_file.write "key #{event['event_testId']} #{event['event_value']}\n"
