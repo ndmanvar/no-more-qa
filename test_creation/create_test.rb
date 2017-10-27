@@ -16,14 +16,16 @@ File.open(test_location, "w") do | file |
     
     file.write "# ------------------BEGIN TEST------------------\n"
     file.write "require 'selenium-webdriver'\n"
-    file.write "@browser = Selenium::WebDriver.for :chrome\n"
+    file.write "@browser = Selenium::WebDriver.for :chrome\n" # TODO. Add browser support
     # TODO: host/testEnv should not be hardcoded
     file.write "@browser.get \"file:///Users/neilmanvar/git/random/no-more-qa/app.html\"\n"
+
     for event in events
         case event['event_type']
         when 'click'
             file.write "@browser.find_element(:css => \"*[test-id='#{event['event_testId']}']\").click()\n"
         when 'key'
+            # TODO: figure out how to group (i.e. send_keys("abc..."))
             file.write "@browser.find_element(:css => \"*[test-id='#{event['event_testId']}']\").send_keys(\"#{event['event_value']}\")\n"
         else
             # TODO: Handle gracefully

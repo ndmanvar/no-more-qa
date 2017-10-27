@@ -10,7 +10,7 @@ class App extends Component {
     super(props);
     
     this.state = {
-      sessions: []
+      sessions: [] // TODO: Templorary, this should not be here
     };
   }
   
@@ -25,26 +25,39 @@ class App extends Component {
       .catch((err)=> {})
   }
 
+  onGenTestCase(uid) {
+    axios
+      .get('http://localhost:3000/gettest/' + uid)
+      .then(({ data })=> {
+        console.log(data);
+        alert(data.test);
+      })
+      .catch((err)=> {})
+
+    // alert("uid is : " + uid);
+  }
+
   render() {
     const child = this.state.sessions.map((el, index) => {
-      return <div key={index}>
+      return <li key={index}>
         <p>UID - { el.event_uid }</p>
-      </div>
+        <button onClick={this.onGenTestCase.bind(this, el.event_uid)}>Generate Test Case for Yo Mama</button>
+      </li>
     });
 
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
+          <img src="http://www.muttville.org/images/mutts/105/8/0/105807-100002-lgsq.jpg?1504770576" className="App-logo" alt="logo" />
+          <h1 className="App-title">Welcome to No-More-QA Dashboard (FrontEnd component)</h1>
         </header>
         <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
+          {/* To get started, edit <code>src/App.js</code> and save to reload. */}
         </p>
 
-        <div>
+        <ul>
           {child}
-        </div>
+        </ul>
       </div>
     );
   }

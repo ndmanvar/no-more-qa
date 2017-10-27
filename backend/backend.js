@@ -49,6 +49,29 @@ app.get('/getevents/:session', function (req, res) {
   });
 });
 
+app.get('/gettest/:session', function (req, res) {
+  const { exec } = require('child_process');
+
+  /* I must be crazy to use ruby and invoke shell from node. This must be redone at some point, to something intelligent... */
+  exec('pwd && cd ../test_creation && ruby create_test.rb ' + req.params.session, function (err, stdout, stderr) {
+    if (err) {
+      console.log(`stderr: ${stderr}`);
+      // node couldn't execute the command
+      return;
+    }
+    // the *entire* stdout and stderr (buffered)
+    console.log(`stdout: ${stdout}`);
+    console.log(`stderr: ${stderr}`);
+
+    res.writeHead(200, {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    });
+
+    res.end(JSON.stringify({ test: stdout }));
+  });
+});
+
 app.get('/getallevents', function (req, res) {
   connection.query('SELECT * FROM events', function (error, results, fields) {
     if (error) throw error; // Need to implement proper error handler, otherwise request will show as pending
@@ -92,7 +115,7 @@ function gracefulExit() {
     process.exit();
   }
 }
-process.on('SIGINT', function () { // might need to also do for SIGTERM
+process.on('SIGINT', function () { // TODO: might need to also do for SIGTERM
   gracefulExit();
 });
 
