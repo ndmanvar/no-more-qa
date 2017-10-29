@@ -33,7 +33,6 @@ File.open(test_location, "w") do | file |
                 else
                     spec_file.write "key #{event['event_testId']} #{event['event_value']}\n"
                 end
-
                 last_key_testId = event['event_testId']
             else
                 # TODO: Handle gracefully
