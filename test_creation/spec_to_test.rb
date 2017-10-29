@@ -18,21 +18,19 @@ File.open(spec_location, "r") do | spec_file |
             case event[0]
             when 'launch_browser'
                 file.write "# ------------------BEGIN TEST------------------\n"
-                file.write "require 'selenium-webdriver'\n"
-                file.write "@browser = Selenium::WebDriver.for :chrome\n" # TODO. Add browser support
+                file.write "require 'watir-webdriver'\n"
+                file.write "browser = Watir::Browser.new :chrome\n" # TODO. Add browser support
                 # Timeout = 15 sec # TODO: configurable timeouts
-                file.write "@browser.get \"#{event[1]}\"\n"
-                file.write "wait = Selenium::WebDriver::Wait.new(:timeout => 15)\n  "
+                file.write "browser.goto \"#{event[1]}\"\n"
             when 'close_browser'
-                file.write "@browser.quit()\n"
+                file.write "browser.quit()\n"
                 file.write "# ------------------END TEST------------------\n"
+                file.write "puts \"Success!\\n\\n\""
             when 'click'
                 # TODO: add wait
-                file.write "\nclick_element = wait.until \{\n    element = @browser.find_element(:css => \"*[test-id='#{event[1]}']\")\n    element if element.displayed?\n\}\n"
-                file.write "click_element.click()\n"
+                file.write "\nbrowser.element(:css => \"*[test-id='#{event[1]}']\").when_present.click()\n"
             when 'key'
-                file.write "\nkey_element = wait.until \{\n    element = @browser.find_element(:css => \"*[test-id='#{event[1]}']\")\n    element if element.displayed?\n\}\n"
-                file.write "key_element.send_keys(\"#{event[2]}\")\n"
+                file.write "\nbrowser.element(:css => \"*[test-id='#{event[1]}']\").when_present.send_keys(\"#{event[2]}\")\n"
             else
                 raise 'error: TODO'
             end
