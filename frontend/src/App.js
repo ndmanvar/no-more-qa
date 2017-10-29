@@ -10,7 +10,8 @@ class App extends Component {
     super(props);
     
     this.state = {
-      sessions: [] // TODO: Templorary, this should not be here
+      sessions: [], // TODO: Templorary, this should not be here
+      test: ""
     };
   }
   
@@ -29,8 +30,12 @@ class App extends Component {
     axios
       .get('http://localhost:3000/gettest/' + uid)
       .then(({ data })=> {
-        // console.log(data);
-        alert(data.test);
+        console.log(data.test);
+
+        // alert(data.test);
+        this.setState({
+          test: data.test
+        });
       })
       .catch((err)=> {})
 
@@ -58,6 +63,10 @@ class App extends Component {
         <ul>
           {child}
         </ul>
+
+        <code style={{ display: 'block', 'white-space': 'pre-wrap', textAlign: 'left'}}>
+          {this.state.test}
+        </code>
       </div>
     );
   }
