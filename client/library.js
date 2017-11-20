@@ -33,30 +33,32 @@ window.onkeypress = function (event) {
 
 function assignTestIDs() {
     var elements = document.getElementsByTagName("*"),
-        counter = 1;
+        counter = 1,
+        href = window.location.href,
+        route = href.substr(href.lastIndexOf('/') + 1);
 
     for (var i = 0, max = elements.length; i < max; i++) {
         //  TODO: only assign testId to certain types of elements (e.g. not html, br) that will be interacted with
-        var testId = elements[i].getAttribute('test-id');
+        var testId = elements[i].getAttribute('id');
         if (testId === null) {
-            elements[i].setAttribute('gen-test-id', counter.toString());
+            elements[i].setAttribute('id', route + "-" + counter.toString());
             counter++;
         } else {
-            if (isNumeric(testId)) console.log("Error: Don't use Integers as test-id homie.");
-            // if (isNumeric(testId)) throw ("Error: Don't use Integers as test-id homie.");
-            // TODO: handle properly, since we will probably want to support the use of id's later, since adding test-id increases payload
+            if (isNumeric(testId)) console.log("Error: Don't use Integers as id homie.");
+            // if (isNumeric(testId)) throw ("Error: Don't use Integers as id homie.");
+            // TODO: handle properly, since we will probably want to support the use of id's later, since adding id increases payload
         }
     }
 }
 
+// TODO: figure out if we need this / what to do with it
 function getTestIDInfo(event) {
-    var testId = event.target.attributes.getNamedItem('test-id'),
-        genTestId = event.target.attributes.getNamedItem('gen-test-id');
-    
+    var testId = event.target.attributes.getNamedItem('id');
+
     return {
-        testId: testId || genTestId,
+        testId: testId,
         safe: !!testId
-    }
+    };
 }
 
 function sendEvent(event) {
@@ -84,6 +86,6 @@ function getGuid() {
         s4() + '-' + s4() + s4() + s4();
 }
 
-function isNumeric(num){
-    return !isNaN(num)
+function isNumeric(num) {
+    return !isNaN(num);
 }
