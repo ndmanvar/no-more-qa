@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
 
 gem 'selenium-webdriver' # TODO: Add versions
+gem 'watir-webdriver'
 gem 'rest-client'
