@@ -1,35 +1,21 @@
-window.uid = getGuid();
-
-assignTestIDs();
-
-window.onclick = function (event) {
-    var element = getTestIDInfo(event);
-    if (element.testId) {
-        console.log('Click on : ' + element.testId.value);
-        sendEvent({
-            type: 'click',
-            testId: element.testId.value,
-            safe: element.safe
-        });
-    }
-
-    // TODO: Send to database / aggregate
-}
-
-// TODO: hover, etc.
-
-window.onkeypress = function (event) {
-    var element = getTestIDInfo(event);
-    if (element.testId) {
-        console.log('Sending key : ' + event.key + ' to : ' + element.testId.value);
-        sendEvent({
-            type: 'key',
-            testId: element.testId.value,
-            key: event.key,
-            safe: element.safe
-        });
-    }
-}
+!function (a, b) {
+    var c = window;
+    c.SessionStack = a,
+    c[a] = c[a] || function () {
+        c[a].q = c[a].q || [],
+        c[a]
+            .q
+            .push(arguments)
+    },
+    c[a].t = b;
+    var d = document.createElement("script");
+    d.async = 1,
+    d.src = "https://cdn.sessionstack.com/sessionstack.js";
+    var e = document.getElementsByTagName("script")[0];
+    e
+        .parentNode
+        .insertBefore(d, e);
+}("sessionstack", "7657507674e04f929b1ba142269ea82a");
 
 function assignTestIDs() {
     var elements = document.getElementsByTagName("*"),
@@ -51,41 +37,8 @@ function assignTestIDs() {
     }
 }
 
-// TODO: figure out if we need this / what to do with it
-function getTestIDInfo(event) {
-    var testId = event.target.attributes.getNamedItem('id');
-
-    return {
-        testId: testId,
-        safe: !!testId
-    };
-}
-
-function sendEvent(event) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'http://localhost:3000/event', true);
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    // xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
-    xhr.onload = function () {
-        // do something to response
-        console.log(this.responseText);
-    };
-
-    // TODO: refactoring and send as object. Will need to possibly escape as well
-    xhr.send('type=' + event.type + '&key=' + event.key + '&uid=' + window.uid + '&testId=' + event.testId + '&safe=' + (event.safe ? '1' : '0'));
-}
-
-// TODO: be smarter about how we are identifying uniqueness, i.e. user info
-function getGuid() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
-}
-
 function isNumeric(num) {
     return !isNaN(num);
 }
+
+assignTestIDs()

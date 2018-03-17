@@ -1,0 +1,5 @@
+task :test do
+  ruby "create_spec.rb 123 5aacb1a623eadf96196193a6"
+  ruby "spec_to_test.rb"
+  ruby "generated_tests/freshly_created_test.rb"
+end

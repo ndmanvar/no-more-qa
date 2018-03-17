@@ -4,11 +4,13 @@ No More QA
 This project intends on removing the need to write automated tests.
 Founders: Kristian Meier, Neil Manvar
 
-----------
+Strategy/Approach:
+------------------
+
 
 
 To setup:
--------------
+---------
 
 Run backend:
 ```
@@ -30,5 +32,9 @@ Use it as parameter to Ruby script:
 ```
 $ cd test_creation
 $ bundle install
-$ ruby create_test.rb <SESSION_ID>
+$ ruby create_test.rb <SESSION_ID> && ruby spec_to_test.rb
 ```
+
+Problems NM-QA is solving:
+- Scaling Testing/T.A.
+- Application Testability
